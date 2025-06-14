@@ -122,7 +122,7 @@ func isSupportedMessageType(message_type string, port *Port, sender_addr net.Add
 	if slices.Contains(SUPPORTED_MESSAGES[port], message_type) {
 		return true
 	}
-	error_msg := fmt.Sprintf("Received an unsupported RendezvousMessage (%s) from %s", message_type, sender_addr)
-	logErrorOnPort(port, error_msg, nil)
+	event_msg := fmt.Sprintf("Received an unsupported RendezvousMessage (%s) from %s", message_type, sender_addr)
+	logEventOnPort(port, event_msg)
 	return false
 }
