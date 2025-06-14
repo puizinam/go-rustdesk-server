@@ -24,8 +24,8 @@ func CreateBuildDirectory() (string, error) {
 	repository_root_dir := findRepositoryRootDir(working_directory)
 	if repository_root_dir == "" {
 		return "", fmt.Errorf(
-			"failed to find the directory %s%c in the current working directory %s",
-			REPOSITORY_NAME, os.PathSeparator, working_directory,
+			"failed to find a directory containing %q in the current working directory %s",
+			REPOSITORY_NAME, working_directory,
 		)
 	}
 

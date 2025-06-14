@@ -14,7 +14,7 @@ func sendRendezvousMessageOverTcp(conn net.Conn, rendezvous_message *pb.Rendezvo
 	// The message has been serialized to bytes, but before we can send it we need to prepend it
 	// with a *length prefix* so that the recipient knows how many bytes to expect.
 	// The maximum message size is limited to 2^30 bits which means that the length of the message
-	// can always be represented by a length prefix of 4 bytes.
+	// can always be represented by a length prefix of 4 bytes (4 bytes can represent numbers up to 2^32 - 1).
 	// Because we don't want to transmit unnecessary bytes, the length prefix can be anywhere from
 	// 1 to 4 bytes long. In other words, it will always use the least amount of bytes necessary
 	// to describe the length of the message that follows it.
@@ -52,9 +52,9 @@ func sendRendezvousMessageOverTcp(conn net.Conn, rendezvous_message *pb.Rendezvo
 	}
 	// We are now sure that the length prefix size is within the allowed range of 1 to 4 bytes.
 	// This means that length_prefix_size is a byte where only the last two bits can be non-zero.
-	// We perform bitwise OR on the least significant byte of the prefix (which is the first byte in
-	// little-endian)—the first six bits won't be changed by the six 0s, but the last two bits will be
-	// modified to indicate the size of the length prefix itself.
+	// Using length_prefix_size, we perform bitwise OR on the least significant byte of the prefix
+	// (which is the first byte in little-endian). The first six bits won't be changed by the six 0s,
+	// but the last two bits will be modified to indicate the size of the length prefix itself.
 	// The only thing we need to be careful about is the following mismatch:
 	// The length prefix can be 1 to 4 bytes long, but two bits can represent numbers from 0 to 3.
 	// This is why we subtract 1 from the length prefix size before going through with the bitwise OR.

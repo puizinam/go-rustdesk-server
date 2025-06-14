@@ -62,7 +62,7 @@ var server_ctx, cleanup_and_terminate = signal.NotifyContext(context.Background(
 // For the sake of cleaner logs on the rendezvous server, the UDP listener will wait for the TCP listeners (connections) to close first
 var wg_tcp_listeners sync.WaitGroup
 
-// To ensure complete logs, both the rendezvous and relay server will wait for their listeners to close before exiting
+// To ensure complete logs, the server will wait for all listeners to close before exiting
 var wg_all_listeners sync.WaitGroup
 
 func main() {
