@@ -24,7 +24,7 @@ func CreateBuildDirectory() (string, error) {
 	repository_root_dir := findRepositoryRootDir(working_directory)
 	if repository_root_dir == "" {
 		return "", fmt.Errorf(
-			"failed to find %s%c in the current working directory %s",
+			"failed to find the directory %s%c in the current working directory %s",
 			REPOSITORY_NAME, os.PathSeparator, working_directory,
 		)
 	}
@@ -39,17 +39,18 @@ func CreateBuildDirectory() (string, error) {
 	return build_dir, nil
 }
 
-// This function takes a file path and, within that file path, tries to find the REPOSITORY_NAME/ directory.
-// If REPOSITORY_NAME/ is found, its absolute path is returned. Otherwise, the function returns an empty string.
+// This function takes a file path and, within that file path, tries to find the REPOSITORY_ROOT/ directory.
+// If REPOSITORY_ROOT/ is found, its absolute path is returned. Otherwise, the function returns an empty string.
 func findRepositoryRootDir(path string) string {
-	// Keep trimming the last element of the path until it points to REPOSITORY_NAME/ or
+	// Keep trimming the last element of the path until it points to REPOSITORY_ROOT/ or
 	// until the system's root directory is reached.
 	for {
 		if strings.HasSuffix(path, string(os.PathSeparator)) {
-			return "" // Reached the system's root directory
+			return "" // Reached the file system's root directory
 		}
-		if filepath.Base(path) == REPOSITORY_NAME {
-			return path // Found the REPOSITORY_NAME/ directory
+		// Call strings.Contains() because directory names like "REPOSITORY_NAME-main" can exist for branches.
+		if strings.Contains(filepath.Base(path), REPOSITORY_NAME) {
+			return path // Found the REPOSITORY_ROOT/ directory
 		}
 		path = filepath.Dir(path)
 	}
