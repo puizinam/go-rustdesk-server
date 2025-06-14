@@ -66,7 +66,7 @@ var wg_tcp_listeners sync.WaitGroup
 var wg_all_listeners sync.WaitGroup
 
 func main() {
-	invalid_args_message := `Failed to start server. The program expects a single command line argument:
+	invalid_args_message := `Failed to start server. The program expects a single command-line argument:
     'rendezvous': starts the rendezvous server
     'relay': starts the relay server`
 	if len(os.Args) != 2 {

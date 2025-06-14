@@ -15,8 +15,7 @@ const SOURCE_CODE_DIR_NAME = "server"
 // The program expects two command line arguments which specify the target OS and CPU architecture.
 func main() {
 	if len(os.Args) != 3 {
-		fmt.Println("Usage: go run . <targetOS> <targetArch>")
-		fmt.Println("Example: go run . linux amd64")
+		fmt.Println("Error: the program expects two command-line arguments: <targetOS> <targetArch>")
 		return
 	}
 	target_OS := os.Args[1]
