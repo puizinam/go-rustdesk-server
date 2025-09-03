@@ -84,7 +84,7 @@ func main() {
 	case "relay":
 		log.Print("Relay server started.")
 		defer log.Print("Relay server terminated.")
-		go listenOnTcp(RELAY_PORT)
+		go listenOnTcp(RELAY_PORT) // Technically don't need a goroutine for a single port but it's easier to reuse listenOnTcp()
 	default:
 		fmt.Println(invalid_args_message)
 		return
@@ -335,7 +335,6 @@ func RENDEZVOUS_PORT_TCP__handleRendezvousMessage(message_type string, rendezvou
 		}
 		// Peer A wants to connect to peer B
 		peer_A_addr := conn.RemoteAddr()
-		addSignalingSession(peer_A_addr, conn)
 		peer_B_id := punch_hole_request.Id
 		peer_map_mutex.Lock()
 		peer_B, is_registered := peer_map[peer_B_id]
@@ -354,7 +353,9 @@ func RENDEZVOUS_PORT_TCP__handleRendezvousMessage(message_type string, rendezvou
 			sendPunchHoleFailure(RENDEZVOUS_PORT_TCP, conn, pb.PunchHoleResponse_OFFLINE)
 			return
 		}
-		// Peer A wants to connect to peer B who is registered and online.
+		// Peer B is registered and online. Store peer A's TCP connection in the signaling_sessions map so it can
+		// later be retrieved to send the response.
+		addSignalingSession(peer_A_addr, conn)
 		// The server will now try to facilitate a direct connection between peer A and peer B.
 		// First, check if peer A and peer B are behind the same NAT (and therefore on the same network) or if they are
 		// behind different NATs (and therefore on different networks).
@@ -649,7 +650,6 @@ func RENDEZVOUS_PORT_UDP__handleRendezvousMessage(message_type string, rendezvou
 	case REGISTER_PK: // PK = Public Key
 		register_pk := rendezvous_message.GetRegisterPk()
 		client_id := register_pk.Id
-		client_uuid := register_pk.Uuid
 		client_pk := register_pk.Pk
 		peer_map_mutex.Lock()
 		_, is_registered := peer_map[client_id]
@@ -658,7 +658,6 @@ func RENDEZVOUS_PORT_UDP__handleRendezvousMessage(message_type string, rendezvou
 		} else {
 			peer_map[client_id] = &Peer{
 				addr:            sender_addr,
-				uuid:            client_uuid,
 				pk:              client_pk,
 				last_registered: time.Now().Unix(),
 			}

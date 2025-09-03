@@ -7,7 +7,6 @@ import (
 
 type Peer struct {
 	addr            net.Addr
-	uuid            []byte
 	pk              []byte // Public key
 	last_registered int64
 }
