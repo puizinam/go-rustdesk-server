@@ -1,9 +1,7 @@
 # go-rustdesk-server
 A rendezvous/relay server for the open-source remote desktop software RustDesk (https://github.com/rustdesk/rustdesk), written in Go.
 
-Only the necessary functionality to connect clients is implemented, there are no extra features such as those offered by the official RustDesk server (https://github.com/rustdesk/rustdesk-server).
-
-Only RustDesk 1.3.8 Windows clients were used to test the server, with the server running on Ubuntu.
+Only the necessary functionality to connect clients is implemented. There are no extra features such as those offered by the official RustDesk server (https://github.com/rustdesk/rustdesk-server).
 
 ## Testing the server
 If you want to test the server yourself, you can follow the steps below:
