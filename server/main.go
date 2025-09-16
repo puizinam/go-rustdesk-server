@@ -195,11 +195,8 @@ func handleTcpConnection(conn net.Conn, port *Port, wg_conn_goroutines *sync.Wai
 		// construct messages from the incoming bytes ourselves.
 		message, err := readMessageFromTcpStream(conn)
 		if err != nil {
-			// Connection was closed before a complete message was received, check who closed it
-			if errors.Is(err, net.ErrClosed) {
-				// The connection was closed by server shutdown
-				logEventOnPort(port, "Closed connection with "+conn.RemoteAddr().String())
-			} else {
+			// Connection was closed before a complete message was received
+			if !errors.Is(err, net.ErrClosed) {
 				// The connection is still open on our end, which means that the client closed it
 				conn.Close()
 				logEventOnPort(port, "Connection with "+conn.RemoteAddr().String()+" has been closed by the client.")
